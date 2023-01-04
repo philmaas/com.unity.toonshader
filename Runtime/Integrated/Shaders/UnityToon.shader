@@ -60,8 +60,8 @@ Shader "Toon" {
         [Toggle(_)] _Is_LightColor_Base ("Is_LightColor_Base", Float ) = 1
         _1st_ShadeMap ("1st_ShadeMap", 2D) = "white" {}
         //v.2.0.5
-        [Toggle(_)] _Use_BaseAs1st ("Use BaseMap as 1st_ShadeMap", Float ) = 0
-        _1st_ShadeColor ("1st_ShadeColor", Color) = (1,1,1,1)
+        [Toggle(_)] _Use_BaseAs1st ("Use BaseMap as 1st_ShadeMap", Float ) = 1
+        _1st_ShadeColor ("1st_ShadeColor", Color) = (0.75,0.75,0.75,1)
         [Toggle(_)] _Is_LightColor_1st_Shade ("Is_LightColor_1st_Shade", Float ) = 1
         _2nd_ShadeMap ("2nd_ShadeMap", 2D) = "white" {}
         //v.2.0.5

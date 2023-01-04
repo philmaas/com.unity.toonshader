@@ -5,6 +5,7 @@
 // sampler2D _2nd_ShadeMap;
 
 TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
 TEXTURE2D(_1st_ShadeMap);
 TEXTURE2D(_2nd_ShadeMap);
 

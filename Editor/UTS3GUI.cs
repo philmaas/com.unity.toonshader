@@ -102,7 +102,8 @@ namespace UnityEditor.Rendering.Toon
         internal const string ShaderPropAngelRing = "_AngelRing";
         internal const string ShaderPropRTHS = "_RTHS";
         internal const string ShaderPropMatCap = "_MatCap";
-        internal const string ShaderPropMainTex = "_MainTex";
+        internal const string ShaderPropMainTex = "_BaseMap";
+        internal const string ShaderPropBaseMap = "_BaseMap";
         internal const string ShaderPropClippingMode = "_ClippingMode";
         internal const string ShaderPropClippingMask = "_ClippingMask";
         internal const string ShaderProp_Set_1st_ShadePosition = "_Set_1st_ShadePosition";
@@ -372,6 +373,7 @@ namespace UnityEditor.Rendering.Toon
 
         protected MaterialProperty stencilMode = null;
         protected MaterialProperty mainTex = null;
+        protected MaterialProperty baseMap = null;
         protected MaterialProperty baseColor = null;
         protected MaterialProperty firstShadeMap = null;
         protected MaterialProperty firstShadeColor = null;
@@ -466,6 +468,7 @@ namespace UnityEditor.Rendering.Toon
 
             stencilMode = FindProperty(ShaderPropStencilMode, props);
             mainTex = FindProperty(ShaderPropMainTex, props);
+            baseMap = FindProperty(ShaderPropBaseMap, props);
             baseColor = FindProperty("_BaseColor", props);
             firstShadeMap = FindProperty("_1st_ShadeMap", props);
             firstShadeColor = FindProperty("_1st_ShadeColor", props);

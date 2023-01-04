@@ -6,6 +6,7 @@ fixed _Use_BaseAs1st;
 fixed _Use_1stAs2nd;
 fixed _Is_LightColor_Base;
 float4 _MainTex_ST;
+float4 _BaseMap_ST;
 float4 _1st_ShadeMap_ST;
 float4 _1st_ShadeColor;
 fixed _Is_LightColor_1st_Shade;

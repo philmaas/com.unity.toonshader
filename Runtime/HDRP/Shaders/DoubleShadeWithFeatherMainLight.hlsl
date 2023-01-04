@@ -35,7 +35,7 @@ float3 UTS_MainLight(LightLoopContext lightLoopContext, FragInputs input, float3
     float3 normalLocal = _NormalMap_var.rgb;
     utsData.normalDirection = normalize(mul(normalLocal, tangentTransform)); // Perturbed normals
 	
-    float4 _MainTex_var = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, TRANSFORM_TEX(Set_UV0, _MainTex));
+    float4 _MainTex_var = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, TRANSFORM_TEX(Set_UV0, _BaseMap));
     float3 i_normalDir = surfaceData.normalWS;
     utsData.viewDirection = V;
     /* to here todo. these should be put int a struct */
@@ -43,12 +43,12 @@ float3 UTS_MainLight(LightLoopContext lightLoopContext, FragInputs input, float3
     //v.2.0.4
 #if defined(_IS_CLIPPING_MODE) 
 //DoubleShadeWithFeather_Clipping
-    float4 _ClippingMask_var = SAMPLE_TEXTURE2D(_ClippingMask, sampler_MainTex, TRANSFORM_TEX(Set_UV0, _ClippingMask));
+    float4 _ClippingMask_var = SAMPLE_TEXTURE2D(_ClippingMask, sampler_BaseMap, TRANSFORM_TEX(Set_UV0, _ClippingMask));
     float Set_Clipping = saturate((lerp(_ClippingMask_var.r, (1.0 - _ClippingMask_var.r), _Inverse_Clipping) + _Clipping_Level));
     clip(Set_Clipping - 0.5);
 #elif defined(_IS_CLIPPING_TRANSMODE) || defined(_IS_TRANSCLIPPING_ON)
 //DoubleShadeWithFeather_TransClipping
-    float4 _ClippingMask_var = SAMPLE_TEXTURE2D(_ClippingMask, sampler_MainTex, TRANSFORM_TEX(Set_UV0, _ClippingMask));
+    float4 _ClippingMask_var = SAMPLE_TEXTURE2D(_ClippingMask, sampler_BaseMap, TRANSFORM_TEX(Set_UV0, _ClippingMask));
     float Set_MainTexAlpha = _MainTex_var.a;
     float _IsBaseMapAlphaAsClippingMask_var = lerp(_ClippingMask_var.r, Set_MainTexAlpha, _IsBaseMapAlphaAsClippingMask);
     float _Inverse_Clipping_var = lerp(_IsBaseMapAlphaAsClippingMask_var, (1.0 - _IsBaseMapAlphaAsClippingMask_var), _Inverse_Clipping);
@@ -106,7 +106,7 @@ float3 UTS_MainLight(LightLoopContext lightLoopContext, FragInputs input, float3
     float Set_BaseColorAlpha = _BaseColorVisible;
 #endif //#ifdef UTS_LAYER_VISIBILITY
     //v.2.0.5
-    float4 _1st_ShadeMap_var = lerp(SAMPLE_TEXTURE2D(_1st_ShadeMap, sampler_MainTex,TRANSFORM_TEX(Set_UV0, _1st_ShadeMap)), _MainTex_var, _Use_BaseAs1st);
+    float4 _1st_ShadeMap_var = lerp(SAMPLE_TEXTURE2D(_1st_ShadeMap, sampler_BaseMap,TRANSFORM_TEX(Set_UV0, _1st_ShadeMap)), _MainTex_var, _Use_BaseAs1st);
     float3 Set_1st_ShadeColor = lerp((_1st_ShadeColor.rgb * _1st_ShadeMap_var.rgb), ((_1st_ShadeColor.rgb * _1st_ShadeMap_var.rgb) * Set_LightColor), _Is_LightColor_1st_Shade);
 #ifdef _IS_CLIPPING_MATTE
     if (_ClippingMatteMode == 2)
@@ -125,7 +125,7 @@ float3 UTS_MainLight(LightLoopContext lightLoopContext, FragInputs input, float3
     float Set_1st_ShadeAlpha = _FirstShadeVisible;
 #endif //#ifdef UTS_LAYER_VISIBILITY
     //v.2.0.5
-    float4 _2nd_ShadeMap_var = lerp(SAMPLE_TEXTURE2D(_2nd_ShadeMap, sampler_MainTex,TRANSFORM_TEX(Set_UV0, _2nd_ShadeMap)), _1st_ShadeMap_var, _Use_1stAs2nd);
+    float4 _2nd_ShadeMap_var = lerp(SAMPLE_TEXTURE2D(_2nd_ShadeMap, sampler_BaseMap,TRANSFORM_TEX(Set_UV0, _2nd_ShadeMap)), _1st_ShadeMap_var, _Use_1stAs2nd);
     float3 Set_2nd_ShadeColor = lerp((_2nd_ShadeColor.rgb * _2nd_ShadeMap_var.rgb), ((_2nd_ShadeColor.rgb * _2nd_ShadeMap_var.rgb) * Set_LightColor), _Is_LightColor_2nd_Shade);
     float _HalfLambert_var = 0.5 * dot(lerp(i_normalDir, utsData.normalDirection, _Is_NormalMapToBase), lightDirection) + 0.5;
     float4 _Set_2nd_ShadePosition_var = tex2D(_Set_2nd_ShadePosition, TRANSFORM_TEX(Set_UV0, _Set_2nd_ShadePosition));

@@ -34,7 +34,7 @@ float3 UTS_OtherLightsShadingGrademap(FragInputs input, float3 i_normalDir,
     float3 normalDirection = normalize(mul(normalLocal, tangentTransform)); // Perturbed normals
  //   float3 i_normalDir = surfaceData.normalWS;
     float3 viewDirection = V;
-    float4 _MainTex_var = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex,TRANSFORM_TEX(Set_UV0, _MainTex));
+    float4 _MainTex_var = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap,TRANSFORM_TEX(Set_UV0, _BaseMap));
     /* end of todo.*/
 
 
