@@ -177,6 +177,9 @@ float _AlphaRemapMax;
 float _AORemapMin;
 float _AORemapMax;
 
+float _Saturation;
+float _HueShift;
+
 float _NormalScale;
 
 float4 _DetailMap_ST;

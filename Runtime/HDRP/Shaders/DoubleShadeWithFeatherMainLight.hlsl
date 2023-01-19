@@ -2,6 +2,25 @@
 //nobuyuki@unity3d.com
 //toshiyuki@unity3d.com (Universal RP/HDRP) 
 
+float3 rgbtohsv(float3 c)
+{
+    float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+    float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+}
+
+
+float3 hsvtorgb(float3 c)
+{
+    float4 K = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    float3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 float3 UTS_MainLight(LightLoopContext lightLoopContext, FragInputs input, float3 mainLihgtDirection, float3 mainLightColor, out float inverseClipping, out float channelOutAlpha, out UTSData utsData)
 {
     channelOutAlpha = 1.0f;
@@ -157,7 +176,21 @@ float3 UTS_MainLight(LightLoopContext lightLoopContext, FragInputs input, float3
     }
     float Set_2nd_ShadeAlpha = _SecondShadeVisible;
 #endif //#ifdef UTS_LAYER_VISIBILITY
-    float3 Set_FinalBaseColor = lerp(Set_BaseColor, lerp(Set_1st_ShadeColor, Set_2nd_ShadeColor, saturate((1.0 + ((_HalfLambert_var - (_ShadeColor_Step - _2ndColorFeatherForMask)) * ((1.0 - _Set_2nd_ShadePosition_var.rgb).r - 1.0)) / (_ShadeColor_Step - (_ShadeColor_Step - _2ndColorFeatherForMask))))), Set_FinalShadowMask); // Final Color
+    float3 Set_FinalBaseColor =  lerp(Set_BaseColor,
+        lerp(Set_1st_ShadeColor,
+            Set_2nd_ShadeColor,
+            saturate((1.0 + ((_HalfLambert_var - (_ShadeColor_Step - _2ndColorFeatherForMask)) * ((1.0 - _Set_2nd_ShadePosition_var.rgb).r - 1.0)) / (_ShadeColor_Step - (_ShadeColor_Step - _2ndColorFeatherForMask)))) * _Saturation),
+            Set_FinalShadowMask); // Final Color
+    
+    // Phil finiliar adjust hue
+    float3 hsl = rgbtohsv(Set_FinalBaseColor);
+    hsl.x += _HueShift;
+    Set_FinalBaseColor = hsvtorgb(hsl);
+    
+    // Phil finiliar adjust saturation
+    float3 grayscale = dot(Set_FinalBaseColor, float3(0.3, 0.59, 0.11));
+    Set_FinalBaseColor = lerp(float4(grayscale, 1.0), float4(Set_FinalBaseColor, 1.0), _Saturation);
+
     channelOutAlpha = lerp(Set_BaseColorAlpha, lerp(Set_1st_ShadeAlpha, Set_2nd_ShadeAlpha, saturate((1.0 + ((_HalfLambert_var - (_ShadeColor_Step - _2ndColorFeatherForMask)) * ((1.0 - _Set_2nd_ShadePosition_var.rgb).r - 1.0)) / (_ShadeColor_Step - (_ShadeColor_Step - _2ndColorFeatherForMask))))), Set_FinalShadowMask);
     float4 _Set_HighColorMask_var = tex2D(_Set_HighColorMask, TRANSFORM_TEX(Set_UV0, _Set_HighColorMask));
     float _Specular_var = 0.5 * dot(halfDirection, lerp(i_normalDir, utsData.normalDirection, _Is_NormalMapToHighColor)) + 0.5; //  Specular                
@@ -295,4 +328,14 @@ float3 UTS_MainLight(LightLoopContext lightLoopContext, FragInputs input, float3
 
 
     return finalColor;
+}
+float3 rgb2hsv(float3 c)
+{
+    float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+    float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 }

@@ -71,6 +71,11 @@ Shader "Toon" {
         _NormalMap ("NormalMap", 2D) = "bump" {}
         _BumpScale ("Normal Scale", Range(0, 1)) = 1
         [Toggle(_)] _Is_NormalMapToBase ("Is_NormalMapToBase", Float ) = 0
+        
+        // Phil Finiliar Saturation and Hue Adjustment
+        _Saturation("Saturation", Range(0, 2)) = 1
+        _HueShift("Hue Shift", Range(0, 1)) = 0
+
         //v.2.0.4.4
         [Toggle(_)] _Set_SystemShadowsToBase ("Set_SystemShadowsToBase", Float ) = 1
         _Tweak_SystemShadowsLevel ("Tweak_SystemShadowsLevel", Range(-0.5, 0.5)) = 0

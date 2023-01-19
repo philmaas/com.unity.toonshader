@@ -185,7 +185,10 @@ namespace UnityEditor.Rendering.Toon
         internal const string ShaderPropIs_UseTweakMatCapOnShadow = "_Is_UseTweakMatCapOnShadow";
         internal const string ShaderPropIs_ViewCoord_Scroll = "_Is_ViewCoord_Scroll";
         internal const string ShaderPropIs_PingPong_Base = "_Is_PingPong_Base";
-
+        
+        internal const string Saturation = "_Saturation";
+        internal const string HueShift = "_HueShift";
+        
         internal const string ShaderPropIs_ViewShift = "_Is_ViewShift";
         internal const string ShaderPropIs_BlendBaseColor = "_Is_BlendBaseColor";
         internal const string ShaderPropIs_OutlineTex = "_Is_OutlineTex";
@@ -385,7 +388,8 @@ namespace UnityEditor.Rendering.Toon
         protected MaterialProperty set_2nd_ShadePosition = null;
         protected MaterialProperty shadingGradeMap = null;
 
-
+        protected MaterialProperty saturation = null;
+        protected MaterialProperty hueShift = null;
 
         protected MaterialProperty highColor_Tex = null;
         protected MaterialProperty highColor = null;
@@ -480,6 +484,8 @@ namespace UnityEditor.Rendering.Toon
             set_2nd_ShadePosition = FindProperty(ShaderProp_Set_2nd_ShadePosition, props, false);
             shadingGradeMap = FindProperty(ShaderProp_ShadingGradeMap, props, false);
 
+            saturation = FindProperty("_Saturation", props);
+            hueShift = FindProperty("_HueShift", props);
 
             highColor_Tex = FindProperty(ShaderProp_HighColor_Tex, props);
             highColor = FindProperty("_HighColor", props);
@@ -723,6 +729,14 @@ namespace UnityEditor.Rendering.Toon
             public static readonly RangeProperty shaderPropBaseColorText = new RangeProperty(
                 label: "Base Color Step", tooltip: "Sets the boundary between the Base Color and the Shade Colors.",
                 propName: ShaderPropBaseColor_Step, defaultValue: 0.5f, min: 0, max: 1 );
+
+            public static readonly RangeProperty shaderPropSaturationText = new RangeProperty(
+                label: "Saturation", tooltip: "Sets the saturation of the Base Color and the Shade Colors.",
+                propName: Saturation, defaultValue: 1f, min: 0, max: 2 );
+            public static readonly RangeProperty shaderPropHueShiftText = new RangeProperty(
+                label: "Hue Shift", tooltip: "Shifts to hue of the Base Color and the Shade Colors.",
+                propName: HueShift, defaultValue: 0f, min: 0, max: 1 );
+
             public static readonly RangeProperty shaderPropBaseFeatherText = new RangeProperty(
                 label: "Base Shading Feather", tooltip: "Feathers the boundary between the Base Color and the Shade Colors..",
                 propName: ShaderPropBaseShade_Feather, defaultValue: 0.0001f, min: 0.0001f, max: 1);
@@ -1427,6 +1441,8 @@ namespace UnityEditor.Rendering.Toon
             }
             EditorGUILayout.Space();
 
+            GUI_RangeProperty(material, Styles.shaderPropSaturationText);
+            GUI_RangeProperty(material, Styles.shaderPropHueShiftText);
             /*
             _NormalMap_Foldout = FoldoutSubMenu(_NormalMap_Foldout, Styles.normalMapFoldout);
             if (_NormalMap_Foldout)
